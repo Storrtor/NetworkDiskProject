@@ -1,2 +1,5 @@
 /.idea/
 /pom.xml
+/NetworkDiskProjectClient/pom.xml
+/NetworkDiskProjectCommon/pom.xml
+/NetworkDiskProjectServer/pom.xml
