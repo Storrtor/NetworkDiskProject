@@ -25,6 +25,8 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
             if (currentState == State.IDLE) {
                 byte readed = buf.readByte();
 
+                byte isClientCommand = buf.readByte();
+
                 currentState = State.NAME_LENGTH;
                 receivedFileLength = 0L;
                 System.out.println("State: Start file receiving");
@@ -36,16 +38,24 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                         currentState = State.NAME;
                     }
                 }
+
+                System.out.println(buf.readableBytes());
+                System.out.println(nextLength);
                 // Запрос на отправку файла
                 if (DataType.getDataTypeFromByte(readed) == DataType.FILE) {
 
                     if (currentState == State.NAME) {
+
                         if (buf.readableBytes() >= nextLength) {
                             byte[] fileName = new byte[nextLength];
                             buf.readBytes(fileName);
                             System.out.println("State: filename received - " + new String(fileName, StandardCharsets.UTF_8));
 
-                            out = new BufferedOutputStream(new FileOutputStream("server_storage/" + new String(fileName)));
+                            if (isClientCommand == DataType.CLIENT_COMMAND.getFirstMessageByte()){
+                                out = new BufferedOutputStream(new FileOutputStream("server_storage/" + new String(fileName)));
+                            } else {
+                                out = new BufferedOutputStream(new FileOutputStream("client_storage/" + new String(fileName)));
+                            }
 
                             currentState = State.FILE_LENGTH;
                         }
@@ -73,13 +83,13 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                     }
                     // Запрос на загрузку файла
                 } else if (DataType.getDataTypeFromByte(readed) == DataType.COMMAND_DWNLD) {
-
                     if (currentState == State.NAME) {
                         if (buf.readableBytes() >= nextLength) {
                             byte[] fileName = new byte[nextLength];
                             buf.readBytes(fileName);
+                            System.out.println(fileName);
                             System.out.println("State: filename received - " + new String(fileName, StandardCharsets.UTF_8));
-                            ProtoFileSender.sendFile(Paths.get("server_storage/" + new String(fileName)), ctx.channel(), future -> {
+                            ProtoFileSender.sendFile(Paths.get("server_storage/" + new String(fileName)), ctx.channel(), true, future -> {
                                 if (!future.isSuccess()) {
                                     future.cause().printStackTrace();
                                 }

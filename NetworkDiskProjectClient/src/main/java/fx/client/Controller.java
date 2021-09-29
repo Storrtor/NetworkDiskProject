@@ -102,12 +102,14 @@ public class Controller implements Initializable {
     public void pressOnDownloud(ActionEvent actionEvent) {
         isClientCommand = true;
         byte[] filenameBytes = tfFileName.getText().getBytes(StandardCharsets.UTF_8);
-        ByteBuf buf = ByteBufAllocator.DEFAULT.directBuffer(1 + 4 + filenameBytes.length);
+        ByteBuf buf = ByteBufAllocator.DEFAULT.directBuffer(1 + 4 + 1 + filenameBytes.length);
         buf.writeByte(DataType.COMMAND_DWNLD.getFirstMessageByte());
+        buf.writeByte(DataType.CLIENT_COMMAND.getFirstMessageByte());
         buf.writeInt(filenameBytes.length);
         buf.writeBytes(filenameBytes);
         System.out.println("Загрузка");
         Network.getInstance().getCurrentChannel().writeAndFlush(buf);
+        tfFileName.clear();
     }
 
     public void pressOnDelete(ActionEvent actionEvent) {
@@ -133,6 +135,11 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void pressOnRefresh(ActionEvent actionEvent) {
+        refreshLocalFilesList();
+        tfFileName.clear();
     }
 }
 

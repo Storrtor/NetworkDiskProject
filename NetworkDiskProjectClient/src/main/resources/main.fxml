@@ -21,5 +21,6 @@
         <Button onAction="#pressOnSendButton" text="Отправить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         <Button onAction="#pressOnDownloud" text="Загрузить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         <Button onAction="#pressOnDelete" text="Удалить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <Button onAction="#pressOnRefresh" text="Обновить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
     </HBox>
 </VBox>

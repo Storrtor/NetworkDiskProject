@@ -19,7 +19,7 @@ public class ProtoFileSender {
 
         buf.writeByte(DataType.FILE.getFirstMessageByte());
 
-        if(isClientCommand) {
+        if(!isClientCommand) {
             buf.writeByte(DataType.CLIENT_COMMAND.getFirstMessageByte());
         } else {
             buf.writeByte(DataType.SERVER_COMMAND.getFirstMessageByte());
@@ -34,7 +34,6 @@ public class ProtoFileSender {
         if(finishListener != null) {
             transferOperationFuture.addListener(finishListener);
         }
-
 
     }
 }
