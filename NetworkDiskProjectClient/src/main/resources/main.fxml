@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Label?>
+<VBox fx:id="rootNode" maxHeight="Infinity" alignment="CENTER" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: linear-gradient(#fff 0%, #eee 10%, #ddd 90%, #bbb 100%);" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="fx.client.Controller">
+    <HBox>
+        <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="TOP_CENTER">Client Storage</Label>
+        <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="TOP_CENTER">Server Storage</Label>
+    </HBox>
+    <HBox>
+        <ListView fx:id="clientFilesList" HBox.hgrow="ALWAYS" maxHeight="Infinity" VBox.vgrow="ALWAYS" maxWidth="Infinity"/>
+        <ListView fx:id="serverFilesList" HBox.hgrow="ALWAYS" maxHeight="Infinity" VBox.vgrow="ALWAYS" maxWidth="Infinity"/>
+    </HBox>
+    <TextField fx:id="tfFileName" focusTraversable="false" promptText="Укажите имя файла на сервере, который хотите скачать"/>
+    <HBox>
+        <Button onAction="#pressOnSendButton" text="Отправить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <Button onAction="#pressOnDownloud" text="Загрузить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <Button onAction="#pressOnDelete" text="Удалить" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+    </HBox>
+</VBox>
