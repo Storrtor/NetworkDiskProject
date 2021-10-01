@@ -6,8 +6,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+
 <?import javafx.scene.control.Label?>
 <VBox fx:id="rootNode" maxHeight="Infinity" alignment="CENTER" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: linear-gradient(#fff 0%, #eee 10%, #ddd 90%, #bbb 100%);" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="fx.client.Controller">
+    <HBox>
+        <Button fx:id="signUp" onAction="#pressOnAuth" text="Авторизироваться" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <Button fx:id="signIn" onAction="#pressOnSignUn" text="Зарегистрироваться" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+    </HBox>
     <HBox>
         <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="TOP_CENTER">Client Storage</Label>
         <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" alignment="TOP_CENTER">Server Storage</Label>

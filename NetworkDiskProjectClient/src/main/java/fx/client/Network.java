@@ -48,7 +48,7 @@ public class Network {
                     .remoteAddress(new InetSocketAddress(Constants.HOST, Constants.PORT))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(new StringEncoder(), new ProtoHandler());
+                            socketChannel.pipeline().addLast(new StringEncoder(), new ClientAuthHandler(), new ProtoHandler());
                             currentChannel = socketChannel;
                         }
                     });
@@ -70,27 +70,5 @@ public class Network {
         currentChannel.close();
     }
 
-
-
-
-
-//    public static boolean sendMsg(byte msg) {
-//        try {
-//            out.writeObject(msg);
-//            return true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-//
-//    public static AbstractMessage readObject() throws ClassNotFoundException, IOException {
-//        Object obj = in.readObject();
-//        return (AbstractMessage) obj;
-//    }
-//
-//    public static byte readByte() throws IOException {
-//        return in.readByte();
-//    }
 
 }

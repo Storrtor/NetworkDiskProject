@@ -8,8 +8,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,11 +26,12 @@ public class Controller implements Initializable {
 
     private static boolean isClientCommand = false;
 
-    public boolean isClientCommand() {
-        return isClientCommand;
-    }
 
-    private Network network;
+    @FXML
+    Button signIn;
+
+    @FXML
+    Button signUp;
 
     @FXML
     TextField tfFileName;
@@ -42,43 +46,10 @@ public class Controller implements Initializable {
         CountDownLatch networkStarter = new CountDownLatch(1);
         new Thread(() -> Network.getInstance().start(networkStarter)).start();
         try {
-            refreshLocalFilesList();
             networkStarter.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-
-//        try {
-//            ProtoFileSender.sendFile(Paths.get("demo.txt"), Network.getInstance().getCurrentChannel(), future -> {
-//                if (!future.isSuccess()) {
-//                    future.cause().printStackTrace();
-//    //                Network.getInstance().stop();
-//                }
-//                if (future.isSuccess()) {
-//                    System.out.println("Файл успешно передан");
-//    //                Network.getInstance().stop();
-//                }
-//            });
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-////        Thread.sleep(2000);
-//        try {
-//            ProtoFileSender.sendFile(Paths.get("demo1.txt"), Network.getInstance().getCurrentChannel(), future -> {
-//                if (!future.isSuccess()) {
-//                    future.cause().printStackTrace();
-//    //                Network.getInstance().stop();
-//                }
-//                if (future.isSuccess()) {
-//                    System.out.println("Файл успешно передан");
-//    //                Network.getInstance().stop();
-//                }
-//            });
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void pressOnSendButton(ActionEvent actionEvent) throws IOException {
@@ -87,6 +58,7 @@ public class Controller implements Initializable {
         refreshLocalFilesList();
     }
 
+    // Отправка файла на сервер
     public static void sendFile(TextField tfFileName) throws IOException {
         ProtoFileSender.sendFile(Paths.get("client_storage/" + tfFileName.getText()),  Network.getInstance().getCurrentChannel(), isClientCommand, future -> {
             if(!future.isSuccess()) {
@@ -140,6 +112,24 @@ public class Controller implements Initializable {
     public void pressOnRefresh(ActionEvent actionEvent) {
         refreshLocalFilesList();
         tfFileName.clear();
+    }
+
+    public void pressOnAuth(ActionEvent actionEvent) throws InterruptedException {
+        ModalWindow.newWindowAuth("Авторизация");
+        // Для того чтобы успел прийти ответ с сервера об успешной аутентификации и кнопка исчезла, пришлось использовать sleep
+        // Не знаю как тут сделать иначе
+        Thread.sleep(1000);
+        if (ClientAuthHandler.isAuthOk()) {
+            signUp.setVisible(false);
+            signUp.setManaged(false);
+        }
+
+    }
+
+    public void pressOnSignUn(ActionEvent actionEvent) {
+        ModalWindow.newWindowSignIn("Регистрация");
+        signIn.setVisible(false);
+        signIn.setManaged(false);
     }
 }
 

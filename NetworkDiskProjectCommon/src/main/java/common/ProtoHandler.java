@@ -17,14 +17,13 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
     private long receivedFileLength;
     private BufferedOutputStream out;
 
-
+    // Единый хендлер клиента и сервера для получения и записи файла
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = ((ByteBuf) msg);
         while (buf.readableBytes() > 0) {
             if (currentState == State.IDLE) {
                 byte readed = buf.readByte();
-
                 byte isClientCommand = buf.readByte();
 
                 currentState = State.NAME_LENGTH;
@@ -39,13 +38,9 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                     }
                 }
 
-                System.out.println(buf.readableBytes());
-                System.out.println(nextLength);
                 // Запрос на отправку файла
                 if (DataType.getDataTypeFromByte(readed) == DataType.FILE) {
-
                     if (currentState == State.NAME) {
-
                         if (buf.readableBytes() >= nextLength) {
                             byte[] fileName = new byte[nextLength];
                             buf.readBytes(fileName);
@@ -81,14 +76,14 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                             }
                         }
                     }
-                    // Запрос на загрузку файла
+                    // Запрос на загрузку файла с сервера
                 } else if (DataType.getDataTypeFromByte(readed) == DataType.COMMAND_DWNLD) {
                     if (currentState == State.NAME) {
                         if (buf.readableBytes() >= nextLength) {
                             byte[] fileName = new byte[nextLength];
                             buf.readBytes(fileName);
-                            System.out.println(fileName);
                             System.out.println("State: filename received - " + new String(fileName, StandardCharsets.UTF_8));
+                            // Обработка загрузки файла клиентом с сервера
                             ProtoFileSender.sendFile(Paths.get("server_storage/" + new String(fileName)), ctx.channel(), true, future -> {
                                 if (!future.isSuccess()) {
                                     future.cause().printStackTrace();
@@ -99,6 +94,9 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                             });
                         }
                     }
+                } else if (DataType.getDataTypeFromByte(readed) == DataType.COMMAND_DELETE) {
+
+                } else if (DataType.getDataTypeFromByte(readed) == DataType.COMMAND_RENAME) {
 
                 }
             }

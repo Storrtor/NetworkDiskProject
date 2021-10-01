@@ -13,4 +13,5 @@ public class Constants {
 
     public static final String STOP_WORD = "/end";
 
+    public static final String AUTH_ERROR = "/authError";
 }

@@ -14,7 +14,7 @@ public class ProtoFileSender {
     public static void sendFile(Path path, Channel channel, boolean isClientCommand, ChannelFutureListener finishListener) throws IOException {
         FileRegion region = new DefaultFileRegion(path.toFile(), 0, Files.size(path));
         byte[] filenameBytes = path.getFileName().toString().getBytes(StandardCharsets.UTF_8);
-        // signal_byte + filename_length(int) + filename + file_length(long)
+        // signal_byte + server/client_command +  filename_length(int) + filename + file_length(long)
         ByteBuf buf = ByteBufAllocator.DEFAULT.directBuffer(1 + 1 + 4 + filenameBytes.length + 8);
 
         buf.writeByte(DataType.FILE.getFirstMessageByte());
