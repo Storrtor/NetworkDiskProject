@@ -25,7 +25,7 @@ public class ClientAuthHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (authOk) {
-            ctx.fireChannelRead(msg);
+//            ctx.fireChannelRead(msg);
         } else {
             ByteBuf buf = ((ByteBuf) msg);
             // Если пользователь авторизирован, отправляем посылку дальше
@@ -39,12 +39,10 @@ public class ClientAuthHandler extends ChannelInboundHandlerAdapter {
                     System.out.println("STATE: Get nick");
                     byte[] nickByte = new byte[nextLength];
                     buf.readBytes(nickByte);
-                    String nick = new String(nickByte);
-                    System.out.println(nick);
+                    nick = new String(nickByte);
                     authOk = true;
                 }
             }
-            System.out.println(nick); // ОСТАНОВИЛАСЬ ТУТ
 
             if (authByte == DataType.AUTH_NOT_OK.getFirstMessageByte()) {
 

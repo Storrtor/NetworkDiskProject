@@ -37,19 +37,22 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                         currentState = State.NAME;
                     }
                 }
-
+                System.out.println(DataType.getDataTypeFromByte(readed) == DataType.FILE);
                 // Запрос на отправку файла
                 if (DataType.getDataTypeFromByte(readed) == DataType.FILE) {
                     if (currentState == State.NAME) {
+                        System.out.println(buf.readableBytes() >= nextLength);
                         if (buf.readableBytes() >= nextLength) {
                             byte[] fileName = new byte[nextLength];
                             buf.readBytes(fileName);
                             System.out.println("State: filename received - " + new String(fileName, StandardCharsets.UTF_8));
 
+
+
                             if (isClientCommand == DataType.CLIENT_COMMAND.getFirstMessageByte()){
-                                out = new BufferedOutputStream(new FileOutputStream("server_storage/" + new String(fileName)));
+                                out = new BufferedOutputStream(new FileOutputStream("server_storage/" + fileName + "/" + new String(fileName)));
                             } else {
-                                out = new BufferedOutputStream(new FileOutputStream("client_storage/" + new String(fileName)));
+                                out = new BufferedOutputStream(new FileOutputStream("client_storage/" + fileName + "/" + new String(fileName)));
                             }
 
                             currentState = State.FILE_LENGTH;
@@ -84,7 +87,10 @@ public class ProtoHandler extends ChannelInboundHandlerAdapter {
                             buf.readBytes(fileName);
                             System.out.println("State: filename received - " + new String(fileName, StandardCharsets.UTF_8));
                             // Обработка загрузки файла клиентом с сервера
-                            ProtoFileSender.sendFile(Paths.get("server_storage/" + new String(fileName)), ctx.channel(), true, future -> {
+
+                            String nick = new String();
+
+                            ProtoFileSender.sendFile(Paths.get("server_storage/" +"" + "/" + new String(fileName)), ctx.channel(), true, future -> {
                                 if (!future.isSuccess()) {
                                     future.cause().printStackTrace();
                                 }

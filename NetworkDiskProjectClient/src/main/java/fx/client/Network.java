@@ -1,7 +1,6 @@
 package fx.client;
 
 import common.Constants;
-import common.ProtoFileSender;
 import common.ProtoHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -11,15 +10,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
-import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
-import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 
 public class Network {

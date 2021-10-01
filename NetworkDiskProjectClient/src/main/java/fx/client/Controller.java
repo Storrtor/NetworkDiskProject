@@ -11,8 +11,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +23,6 @@ import java.util.concurrent.CountDownLatch;
 public class Controller implements Initializable {
 
     private static boolean isClientCommand = false;
-
 
     @FXML
     Button signIn;
@@ -53,14 +50,15 @@ public class Controller implements Initializable {
     }
 
     public void pressOnSendButton(ActionEvent actionEvent) throws IOException {
-        sendFile(tfFileName);
+        sendFile(ClientAuthHandler.getNick() + "/"  + tfFileName.getText());
         tfFileName.clear();
         refreshLocalFilesList();
     }
 
     // Отправка файла на сервер
-    public static void sendFile(TextField tfFileName) throws IOException {
-        ProtoFileSender.sendFile(Paths.get("client_storage/" + tfFileName.getText()),  Network.getInstance().getCurrentChannel(), isClientCommand, future -> {
+    public static void sendFile(String tfFileName) throws IOException {
+        System.out.println(tfFileName);
+        ProtoFileSender.sendFile(Paths.get("client_storage/" + tfFileName),  Network.getInstance().getCurrentChannel(), isClientCommand, future -> {
             if(!future.isSuccess()) {
                 future.cause().printStackTrace();
             }
@@ -94,12 +92,12 @@ public class Controller implements Initializable {
         Platform.runLater(() -> {
             try {
                 clientFilesList.getItems().clear();
-                Files.list(Paths.get("client_storage"))
+                Files.list(Paths.get("client_storage/" + ClientAuthHandler.getNick()))
                         .filter(p -> !Files.isDirectory(p))
                         .map(p -> p.getFileName().toString())
                         .forEach(o -> clientFilesList.getItems().add(o));
                 serverFilesList.getItems().clear();
-                Files.list(Paths.get("server_storage"))
+                Files.list(Paths.get("server_storage/" + ClientAuthHandler.getNick()))
                         .filter(p -> !Files.isDirectory(p))
                         .map(p -> p.getFileName().toString())
                         .forEach(o -> serverFilesList.getItems().add(o));
@@ -116,9 +114,6 @@ public class Controller implements Initializable {
 
     public void pressOnAuth(ActionEvent actionEvent) throws InterruptedException {
         ModalWindow.newWindowAuth("Авторизация");
-        // Для того чтобы успел прийти ответ с сервера об успешной аутентификации и кнопка исчезла, пришлось использовать sleep
-        // Не знаю как тут сделать иначе
-        Thread.sleep(1000);
         if (ClientAuthHandler.isAuthOk()) {
             signUp.setVisible(false);
             signUp.setManaged(false);
